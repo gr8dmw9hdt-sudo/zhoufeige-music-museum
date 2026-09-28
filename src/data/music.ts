@@ -129,6 +129,7 @@ export type TourDate = {
 export const tourDates: TourDate[] = [
   { city: "上海", date: "2026-07-17", venue: "回响之地 Music Park", ticket: "¥237 / 337 / 417 / 617", note: "生日场 · 首站 · 嘉宾 林志炫" },
   { city: "深圳", date: "2026-07-25", venue: "SoFun Live（光明区）", ticket: "¥237 / 417" },
+  { city: "长沙", date: "2026-08-01", venue: "达丰空间（锦秀店）", ticket: "¥237 / 417" },
   { city: "成都", date: "2026-08-08", venue: "MAO Livehouse 成都", ticket: "¥237 / 417", note: "嘉宾 王泓昊" },
   { city: "青岛", date: "2026-08-29", venue: "来舞演艺中心", ticket: "¥237 / 417", note: "嘉宾 斯丹曼簇" },
   { city: "杭州", date: "2026-09-12", venue: "CH8-LIVEHOUSE（杭州小河店）", ticket: "¥237 / 417", note: "嘉宾 可楼" },
