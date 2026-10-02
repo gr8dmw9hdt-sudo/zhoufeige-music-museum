@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import JsonLd from "@/components/JsonLd";
+import BackgroundMusic from "@/components/BackgroundMusic";
+import { AudioProvider } from "@/components/AudioProvider";
 import { SITE_URL } from "@/lib/site";
 import { socialLinks, artistLinks } from "@/data/music";
 
@@ -72,12 +74,15 @@ export default function RootLayout({
     <html lang="zh-CN" className="h-full antialiased">
       <body className="grain min-h-full flex flex-col">
         <JsonLd data={personJsonLd} />
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <footer className="border-t border-white/5 py-8 text-center text-xs text-mist/60">
-          <p>非官方粉丝站 · 图片与音乐版权归原方及周菲戈工作室所有</p>
-          <p className="mt-1">Built with 深夜月光 · 24:01</p>
-        </footer>
+        <AudioProvider>
+          <Nav />
+          <main className="flex-1">{children}</main>
+          <footer className="border-t border-white/5 py-8 text-center text-xs text-mist/60">
+            <p>非官方粉丝站 · 图片与音乐版权归原方及周菲戈工作室所有</p>
+            <p className="mt-1">Built with 深夜月光 · 24:01</p>
+          </footer>
+          <BackgroundMusic />
+        </AudioProvider>
       </body>
     </html>
   );
