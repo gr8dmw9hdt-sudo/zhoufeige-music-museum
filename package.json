@@ -9,28 +9,29 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "cf:build": "opennextjs-cloudflare build",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf:preview": "opennextjs-cloudflare build && wrangler dev"
+    "pages:build": "vercel build && node scripts/rebuild-api-edge-functions.mjs && npx @cloudflare/next-on-pages --skip-build",
+    "pages:deploy": "vercel build && node scripts/rebuild-api-edge-functions.mjs && npx @cloudflare/next-on-pages --skip-build && wrangler pages deploy .vercel/output/static --project-name=zhoufeige-music-museum-cn --branch=main",
+    "pages:preview": "vercel build && node scripts/rebuild-api-edge-functions.mjs && npx @cloudflare/next-on-pages --skip-build && wrangler pages dev .vercel/output/static"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
     "framer-motion": "^13.4.4",
-    "next": "16.3.6",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "next": "15.1.7",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "simple-icons": "^16.33.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.20.7",
+    "@cloudflare/next-on-pages": "1.13.16",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.6",
+    "eslint-config-next": "15.1.7",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vercel": "^46.0.0",
     "wrangler": "^4.147.0"
   }
 }

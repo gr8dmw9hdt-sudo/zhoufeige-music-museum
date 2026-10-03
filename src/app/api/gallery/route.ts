@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAdminSupabase } from "@/lib/supabase";
 
+export const runtime = "edge";
+
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 
 export async function POST(req: Request) {

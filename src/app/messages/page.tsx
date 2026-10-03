@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 // 内容随留言实时变化，按请求动态渲染
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 type Message = {

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminSupabase } from "@/lib/supabase";
 
+export const runtime = "edge";
+
 export async function POST(req: NextRequest) {
   const session = req.cookies.get("admin_session")?.value;
   if (!session || session !== process.env.ADMIN_PASSWORD) {
