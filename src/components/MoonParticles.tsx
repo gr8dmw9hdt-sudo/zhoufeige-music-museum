@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import {
+  gsap,
+  useGSAP,
+  EASE_IN_OUT,
+  prefersReducedMotion,
+} from "@/lib/gsap";
 
 type Particle = {
   left: string;
@@ -30,17 +36,42 @@ const PARTICLES: Particle[] = [
 ];
 
 export default function MoonParticles() {
-  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const els = gsap.utils.toArray<HTMLElement>(".moon-particle", ref.current);
+      if (prefersReducedMotion()) {
+        gsap.set(els, { opacity: 0.35 });
+        return;
+      }
+      els.forEach((el, i) => {
+        const p = PARTICLES[i];
+        gsap.to(el, {
+          y: -40,
+          x: 8,
+          opacity: 0.4,
+          duration: p.duration / 2, // yoyo 后整周期仍 = p.duration
+          delay: p.delay,
+          repeat: -1,
+          yoyo: true,
+          ease: EASE_IN_OUT,
+        });
+      });
+    },
+    { scope: ref },
+  );
 
   return (
     <div
+      ref={ref}
       aria-hidden
       className="pointer-events-none absolute inset-0 overflow-hidden"
     >
       {PARTICLES.map((p, i) => (
-        <motion.span
+        <span
           key={i}
-          className="absolute rounded-full"
+          className="moon-particle absolute rounded-full"
           style={{
             left: p.left,
             top: p.top,
@@ -48,23 +79,8 @@ export default function MoonParticles() {
             height: p.size,
             background:
               "radial-gradient(circle, rgba(232,200,122,0.9), rgba(232,200,122,0) 70%)",
-            boxShadow: "0 0 12px rgba(232,200,122,0.6)",
-            opacity: reduce ? 0.35 : 0.15,
-          }}
-          animate={
-            reduce
-              ? undefined
-              : {
-                  y: [0, -40],
-                  x: [0, 8, 0],
-                  opacity: [0.15, 0.6, 0.15],
-                }
-          }
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
+            boxShadow: "0 0 6px rgba(232,200,122,0.35)",
+            opacity: 0.15,
           }}
         />
       ))}

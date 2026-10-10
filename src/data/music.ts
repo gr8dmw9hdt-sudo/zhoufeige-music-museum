@@ -1,7 +1,9 @@
 // 周菲戈作品数据（来源：QQ音乐 / 网易云 / 抖音百科 / Apple Music Essentials）
 
 const ne = (id: number) => `https://music.163.com/song?id=${id}`;
+const neSearch = (kw: string) => `https://music.163.com/#/search/m/?s=${encodeURIComponent(kw)}`;
 const qq = (mid: string) => `https://y.qq.com/n/ryqq/songDetail/${mid}`;
+const bili = (bvid: string) => `https://www.bilibili.com/video/${bvid}/`;
 
 export type Track = {
   title: string;
@@ -34,7 +36,7 @@ export type SocialPlatform = "微博" | "B站" | "抖音" | "小红书";
 export const socialLinks: { name: SocialPlatform; handle: string; href: string }[] = [
   { name: "微博", handle: "@周菲戈（歌手·音乐人）", href: "https://weibo.com/n/周菲戈" },
   { name: "B站", handle: "浙艺没有菲戈", href: "https://space.bilibili.com/513613827" },
-  { name: "抖音", handle: "周菲戈（成都巡演版）", href: "https://v.douyin.com/iUKEdDYS/" },
+  { name: "抖音", handle: "周菲戈（巡演收官场广州开票版）", href: "https://v.douyin.com/iUKEdDYS/" },
   { name: "小红书", handle: "周菲戈（发新专 巡演版）", href: "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent("周菲戈（发新专 巡演版）") },
 ];
 
@@ -114,6 +116,50 @@ export const tracks: Track[] = [
   { title: "B级鲨鱼 (Live)", year: 2025, from: "亚洲新声 第2期", tag: "综艺Live", link: ne(2710103490) },
   { title: "二十分的爱 (Live)", year: 2025, from: "亚洲新声 第4期", tag: "综艺Live", link: ne(2714786486) },
   { title: "飞鱼 (Live)", year: 2025, from: "亚洲新声 第10期", tag: "综艺Live", note: "《亚洲新声》亚军之路", link: ne(2729402934) },
+];
+
+export type Compilation = {
+  title: string;
+  year: number;
+  subtitle: string;
+  desc: string;
+  tracks: { title: string; note?: string; link?: string; bvid?: string }[];
+};
+
+// 两个节目现场合辑：路人入坑的「他是怎么被看见的」入口
+// 带 bvid 的曲目会在音乐页内嵌 B站 视频（见「现场视频」区）
+export const compilations: Compilation[] = [
+  {
+    title: "中国好声音 · 现场合辑",
+    year: 2022,
+    subtitle: "51:0 一战成名",
+    desc: "廖昌永、李克勤双导师转身，导师对战 51:0 全票胜出——从这里认识他。",
+    tracks: [
+      { title: "Simon", note: "51:0 全票胜出，透亮高音一战成名", link: ne(1983714138) },
+      { title: "拆穿", link: ne(1987550202) },
+      { title: "衣柜歌手", link: ne(1973672971) },
+      { title: "我不相信", link: neSearch("周菲戈 我不相信") },
+      { title: "你留下的爱", link: neSearch("周菲戈 你留下的爱") },
+      { title: "她", link: neSearch("周菲戈 她") },
+    ],
+  },
+  {
+    title: "亚洲新声 · 现场合辑",
+    year: 2025,
+    subtitle: "亚军之路",
+    desc: "国际舞台再出发，从《B级鲨鱼》到《飞鱼》拿下亚军。",
+    tracks: [
+      { title: "坏翅膀", bvid: "BV1S1u1zQEYf", link: bili("BV1S1u1zQEYf") },
+      { title: "B级鲨鱼", link: bili("BV1UL7Wz3Ec7") },
+      { title: "这样很好", link: bili("BV1BzjJzLEpE") },
+      { title: "二十分的爱", link: bili("BV1psMuziELv") },
+      { title: "船歌", link: bili("BV1shTuzBEdZ") },
+      { title: "年", link: bili("BV1jj37zREbV") },
+      { title: "底细", link: bili("BV14m88zoEUN") },
+      { title: "独上C楼", link: bili("BV14m88zoEUN") },
+      { title: "飞鱼", note: "总决赛，亚军之路", link: bili("BV14m88zoEUN") },
+    ],
+  },
 ];
 
 export type TourDate = {

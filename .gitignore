@@ -48,3 +48,13 @@ next-env.d.ts
 
 # Claude Code 本地设置（可能含密钥）
 .claude/
+
+# 本地 AI 编辑器技能包（工具配置，不属于站点代码，共 2.6MB）
+.agents/
+.codex/
+
+# supabase CLI 缓存
+supabase/.temp/
+
+# Office 临时锁文件
+~$*

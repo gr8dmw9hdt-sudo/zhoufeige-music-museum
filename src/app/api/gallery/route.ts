@@ -3,49 +3,51 @@ import { getAdminSupabase } from "@/lib/supabase";
 
 export const runtime = "edge";
 
-const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+const MAX_PATH_LEN = 200;
 
+// 上传流程已改为「浏览器直传 Supabase（TUS）」，本接口只负责把元信息写入审核队列。
+// 因此这里只接收轻量 JSON，不再接收文件本体（绕过 Cloudflare 的 100MB 请求体上限）。
 export async function POST(req: Request) {
   const supabase = getAdminSupabase();
   if (!supabase) {
     return NextResponse.json({ error: "尚未接入数据库" }, { status: 503 });
   }
 
-  let formData: FormData;
+  let body: unknown;
   try {
-    formData = await req.formData();
+    body = await req.json();
   } catch {
     return NextResponse.json({ error: "无效的请求" }, { status: 400 });
   }
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "请选择要上传的图片或视频" }, { status: 400 });
+  const { storage_path, type, nickname, caption } = (body ?? {}) as {
+    storage_path?: string;
+    type?: string;
+    nickname?: string;
+    caption?: string;
+  };
+
+  if (
+    !storage_path ||
+    typeof storage_path !== "string" ||
+    storage_path.length > MAX_PATH_LEN ||
+    storage_path.includes("/")
+  ) {
+    return NextResponse.json({ error: "缺少文件信息" }, { status: 400 });
   }
-  if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: "文件超过 50MB" }, { status: 400 });
+  if (type !== "image") {
+    return NextResponse.json({ error: "影像馆暂仅支持图片投稿" }, { status: 400 });
   }
 
-  const nickname = String(formData.get("nickname") ?? "").trim().slice(0, 20) || "匿名";
-  const captionRaw = String(formData.get("caption") ?? "").trim().slice(0, 100);
-  const caption = captionRaw || null;
-  const type = file.type.startsWith("video/") ? "video" : "image";
-  const ext = file.name.split(".").pop() || "bin";
-  const path = `${crypto.randomUUID()}.${ext}`;
-
-  const bytes = await file.arrayBuffer();
-  const { error: upErr } = await supabase.storage
-    .from("gallery")
-    .upload(path, bytes, { contentType: file.type || "application/octet-stream" });
-  if (upErr) {
-    return NextResponse.json({ error: upErr.message }, { status: 500 });
-  }
+  const nick = String(nickname ?? "").trim().slice(0, 20) || "匿名";
+  const capRaw = String(caption ?? "").trim().slice(0, 100);
+  const cap = capRaw || null;
 
   const { error: insErr } = await supabase.from("gallery_items").insert({
-    nickname,
+    nickname: nick,
     type,
-    storage_path: path,
-    caption,
+    storage_path,
+    caption: cap,
     status: "pending",
   });
   if (insErr) {

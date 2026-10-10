@@ -6,13 +6,6 @@ import AdminPanel from "@/components/AdminPanel";
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-export type PendingMessage = {
-  id: string;
-  nickname: string;
-  content: string;
-  created_at: string;
-};
-
 export type PendingGallery = {
   id: string;
   nickname: string;
@@ -21,6 +14,34 @@ export type PendingGallery = {
   url: string;
   created_at: string;
 };
+
+// 最近访问：精确时间戳 + Cloudflare 给出的粗粒度位置（可能为 null：老数据 / 拿不到）
+export type VisitRow = {
+  visited_at: string;
+  country: string | null;
+  region: string | null;
+  city: string | null;
+  timezone: string | null;
+};
+
+export type VisitStats = {
+  total: number;
+  today: number;
+  daily: { day: string; visits: number }[];
+  recent: VisitRow[];
+};
+
+// 北京时间的 YYYY-MM-DD（Cloudflare edge 运行时支持 Intl timeZone）
+function beijingToday(): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
 
 type GalleryRow = {
   id: string;
@@ -40,13 +61,6 @@ export default async function AdminPage() {
   }
 
   const supabase = getAdminSupabase();
-  const msgRes = supabase
-    ? await supabase
-        .from("messages")
-        .select("id,nickname,content,created_at")
-        .eq("status", "pending")
-        .order("created_at", { ascending: false })
-    : null;
   const galRes = supabase
     ? await supabase
         .from("gallery_items")
@@ -55,7 +69,6 @@ export default async function AdminPage() {
         .order("created_at", { ascending: false })
     : null;
 
-  const messages = (msgRes?.data ?? []) as PendingMessage[];
   const gallery = ((galRes?.data ?? []) as GalleryRow[]).map((g) => ({
     id: g.id,
     nickname: g.nickname,
@@ -65,5 +78,38 @@ export default async function AdminPage() {
     created_at: g.created_at,
   }));
 
-  return <AdminPanel messages={messages} gallery={gallery} />;
+  let stats: VisitStats = { total: 0, today: 0, daily: [], recent: [] };
+  if (supabase) {
+    const [totalRes, dailyRes, recentRes] = await Promise.all([
+      supabase.rpc("get_site_visit_total"),
+      supabase
+        .from("site_daily_visits")
+        .select("day,visits")
+        .order("day", { ascending: false })
+        .limit(30),
+      supabase
+        .from("site_visits")
+        .select("visited_at,country,region,city,timezone")
+        .order("visited_at", { ascending: false })
+        .limit(30),
+    ]);
+    const total = Number(totalRes.data ?? 0);
+    const daily = (dailyRes.data ?? []) as { day: string; visits: number }[];
+    const recent = ((recentRes.data ?? []) as VisitRow[]).map((r) => ({
+      visited_at: r.visited_at,
+      country: r.country ?? null,
+      region: r.region ?? null,
+      city: r.city ?? null,
+      timezone: r.timezone ?? null,
+    }));
+    const todayStr = beijingToday();
+    stats = {
+      total,
+      today: daily.find((d) => d.day === todayStr)?.visits ?? 0,
+      daily,
+      recent,
+    };
+  }
+
+  return <AdminPanel gallery={gallery} stats={stats} />;
 }

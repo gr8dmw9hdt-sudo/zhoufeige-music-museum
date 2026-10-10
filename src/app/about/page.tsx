@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "关于周菲戈",
@@ -9,12 +10,15 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-20">
-      <header className="mb-14">
-        <p className="text-sm tracking-[0.3em] text-mist">ABOUT</p>
-        <h1 className="mt-3 font-[family-name:var(--font-fraunces)] text-5xl text-moon">关于周菲戈</h1>
-      </header>
+      <Reveal>
+        <header className="mb-14">
+          <p className="kicker">ABOUT</p>
+          <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl text-moon">关于周菲戈</h1>
+        </header>
+      </Reveal>
 
-      <div className="space-y-8 text-paper/80">
+      <Reveal delay={0.1}>
+      <div className="space-y-8 text-paper/90">
         <p>
           <span className="text-moon">周菲戈</span>
           ，2002年7月17日生于浙江江山，毕业于浙江艺术职业学院，中国内地流行乐男歌手。
@@ -42,8 +46,10 @@ export default function AboutPage() {
         </p>
         <p>他擅长流行、民谣，新歌里也藏着国风与武侠的骨相。</p>
       </div>
+      </Reveal>
 
-      <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/5 bg-white/5 sm:grid-cols-4">
+      <Reveal delay={0.15}>
+      <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-paper-line bg-paper-surface sm:grid-cols-4">
         {[
           ["出生地", "浙江江山"],
           ["生", "2002.07.17"],
@@ -56,6 +62,7 @@ export default function AboutPage() {
           </div>
         ))}
       </dl>
+      </Reveal>
     </div>
   );
 }

@@ -13,7 +13,7 @@
 - 🗺️ **大事记** — 2014 → 2026 时间轴
 - 👤 **关于** — 歌手简介与档案
 - 🖼️ **影像馆** — 访客上传图片/视频，审核后公开展示
-- 💬 **留言墙** — 写下想对菲戈说的话，审核后上墙
+- 🎙️ **访谈** — B站/抖音博主专访，从这里认识他
 - 🔐 **审核后台**（`/admin`）— 密码保护，一键通过/驳回投稿
 
 ## 🛠️ 技术栈
@@ -37,10 +37,10 @@ npm run dev
 
 ## 🔧 环境变量 & Supabase 初始化
 
-留言墙和影像馆依赖 Supabase，需要先初始化：
+影像馆依赖 Supabase，需要先初始化：
 
 1. 到 [Supabase](https://supabase.com) 新建项目。
-2. 打开 **SQL Editor**，把 [supabase/schema.sql](supabase/schema.sql) 整段粘贴执行（建两张表 + 一个存储桶）。
+2. 打开 **SQL Editor**，把 [supabase/schema.sql](supabase/schema.sql) 整段粘贴执行（建一张表 + 一个存储桶）。
 3. 复制 [.env.local.example](.env.local.example) 为 `.env.local`，填入：
    - `NEXT_PUBLIC_SUPABASE_URL` — Project Settings → API → Project URL
    - `SUPABASE_SERVICE_ROLE_KEY` — Project Settings → API → `service_role`
@@ -59,7 +59,7 @@ npm run dev
 
 ## 🤝 参与共建
 
-- **方式一（无需编程）**：访问影像馆上传照片、留言墙写下你的故事。
+- **方式一（无需编程）**：访问影像馆上传照片、分享你拍下的现场。
 - **方式二（贡献代码）**：Fork 本仓库 → 修改 → 提交 Pull Request。
 
 ## ⚠️ 版权声明

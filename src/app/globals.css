@@ -4,14 +4,23 @@
   /* 深夜音乐馆配色 */
   --night: #0b0e1a;          /* 深夜蓝黑 */
   --night-deep: #070912;
-  --moon: #e8c87a;           /* 月光金 */
+  /* 月相三档金：新月暗铜 → 主金 → 满月高光 */
+  --moon-deep: #a8844a;      /* 深金/暗铜：发丝线、黑胶刻槽 */
+  --moon: #e8c87a;           /* 月光金（主色） */
+  --moon-light: #f6e0a8;     /* 满月高光：标题光晕、激活态 */
   --moon-soft: rgba(232, 200, 122, 0.12);
-  --vermilion: #c8453c;      /* 朱红（国风武侠感） */
-  --mist: #8a93b8;           /* 雾蓝灰 */
-  --paper: #e9e6da;          /* 暖纸白 */
+  --vermilion: #c8453c;      /* 朱红：印章式点缀 */
+  --mist: #8a93b8;           /* 雾蓝灰：次要文字 / 破晓冷光 */
+  --paper: #ece8db;          /* 暖纸白（正文） */
+  --paper-surface: rgba(236, 232, 219, 0.05); /* 纸本卡面 */
+  --paper-line: rgba(236, 232, 219, 0.12);    /* 发丝线 */
 
-  /* 系统衬线字体栈（不依赖 Google Fonts） */
-  --font-fraunces: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+  /* 动效缓动（Emil Kowalski 曲线：进入/退出用 ease-out，屏幕上的位移用 ease-in-out） */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* 字体：Didone 唱片封面字（Bodoni）作标题，系统宋体作正文 */
+  --font-display: "Bodoni Moda Variable", "Didot", "Bodoni MT", "Bodoni 72", Georgia, serif;
   --font-noto-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC",
     "SimSun", Georgia, serif;
 }
@@ -34,13 +43,45 @@ h4 {
   outline-offset: 2px;
 }
 
+/* —— 移动端原生感（Emil Kowalski · mobile-native）—— */
+html {
+  -webkit-tap-highlight-color: transparent; /* 去掉 iOS/Android 点击灰色高亮 */
+  -webkit-text-size-adjust: 100%;           /* 禁止横屏自动放大字体 */
+}
+
+/* 输入框字号 ≥16px，避免 iOS 聚焦时整页缩放（仅触屏，桌面保持原字号） */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* 去掉移动端 300ms 点击延迟 */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* 按压反馈：按下轻微回缩，取代被移除的浏览器高亮 */
+button:active,
+a:active {
+  transform: scale(0.97);
+}
+
 @theme inline {
   --color-night: var(--night);
   --color-night-deep: var(--night-deep);
   --color-moon: var(--moon);
+  --color-moon-light: var(--moon-light);
+  --color-moon-deep: var(--moon-deep);
   --color-vermilion: var(--vermilion);
   --color-mist: var(--mist);
   --color-paper: var(--paper);
+  --color-paper-surface: var(--paper-surface);
+  --color-paper-line: var(--paper-line);
 }
 
 html, body {
@@ -50,55 +91,115 @@ html, body {
 }
 
 body {
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 200, 122, 0.08), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(200, 69, 60, 0.05), transparent),
-    var(--night-deep);
+  background: linear-gradient(
+    180deg,
+    #161018 0%,   /* 傍晚：暗暖紫暮色 */
+    #070912 48%,  /* 子夜：最深蓝黑（--night-deep） */
+    #0c1324 100%  /* 破晓前：冷蓝微光 */
+  );
 }
 
-/* 噪点颗粒质感 */
-.grain::before {
+/* 漂浮微尘：6 个暖金 / 冷蓝光点，盖在背景上、内容下 */
+body::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
-  z-index: 50;
-  opacity: 0.035;
+  background:
+    radial-gradient(circle 6px at 12% 22%, rgba(232, 200, 122, 0.5), transparent 70%),
+    radial-gradient(circle 4px at 34% 66%, rgba(138, 147, 184, 0.5), transparent 70%),
+    radial-gradient(circle 5px at 56% 16%, rgba(232, 200, 122, 0.45), transparent 70%),
+    radial-gradient(circle 4px at 74% 54%, rgba(138, 147, 184, 0.5), transparent 70%),
+    radial-gradient(circle 6px at 88% 82%, rgba(232, 200, 122, 0.5), transparent 70%),
+    radial-gradient(circle 3px at 47% 78%, rgba(138, 147, 184, 0.45), transparent 70%);
+  animation: dust-drift 26s ease-in-out infinite alternate;
+}
+
+/* 噪点：SVG 噪点，盖在背景上、内容下 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes dust-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  to {
+    transform: translate3d(-2%, -3%, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 /* 月光光晕文字 */
 .moon-glow {
-  text-shadow: 0 0 40px rgba(232, 200, 122, 0.35);
+  text-shadow:
+    0 0 30px rgba(246, 224, 168, 0.28),
+    0 0 70px rgba(232, 200, 122, 0.18);
 }
 
-/* 细分割线 */
+/* 细分割线（暗铜发丝线） */
 .rule {
-  background: linear-gradient(90deg, transparent, rgba(232, 200, 122, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(168, 132, 74, 0.5), transparent);
   height: 1px;
 }
 
-/* 月光光晕（conic-gradient + 20s 缓慢旋转） */
+/* 页首双语眉题：中文 + 英文注脚，配一枚月相圆点 */
+.kicker {
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  color: var(--mist);
+}
+
+.kicker::before {
+  content: "";
+  display: inline-block;
+  width: 0.3rem;
+  height: 0.3rem;
+  margin: 0 0.55em 0.1em 0;
+  border-radius: 9999px;
+  background: var(--moon);
+  opacity: 0.55;
+  vertical-align: middle;
+}
+
+/* 黑胶唱片：同心细环 + 中心光晕 + 20s 缓慢旋转 */
 @keyframes spin-slow {
   to {
     transform: rotate(360deg);
   }
 }
 
-.moon-conic {
-  background: conic-gradient(
-    from 0deg,
-    transparent,
-    rgba(232, 200, 122, 0.18) 20%,
-    transparent 40%,
-    rgba(232, 200, 122, 0.12) 75%,
-    transparent
-  );
+.vinyl-disc {
+  background:
+    /* 中心光晕：满月高光 */
+    radial-gradient(circle at 50% 50%, rgba(246, 224, 168, 0.5) 0%, rgba(232, 200, 122, 0.14) 26%, transparent 48%),
+    /* 同心细环：黑胶刻槽（暗铜反光） */
+    repeating-radial-gradient(circle at 50% 50%, rgba(168, 132, 74, 0.18) 0 1px, transparent 1px 5px),
+    /* 半透明黑胶基底 */
+    radial-gradient(circle at 50% 50%, rgba(16, 20, 34, 0.62), rgba(7, 9, 18, 0.5));
+  box-shadow:
+    0 0 70px rgba(232, 200, 122, 0.14),
+    inset 0 0 32px rgba(232, 200, 122, 0.10);
   animation: spin-slow 20s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .moon-conic {
+  .vinyl-disc {
     animation: none;
   }
 }
@@ -134,4 +235,175 @@ body {
     transform: scale(1.8);
     opacity: 0;
   }
+}
+
+.moon-ring {
+  animation: moon-ring 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moon-ring {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* —— 入站动画（EntranceIntro）：朦胧幕布 · 月光 · 细沙 —— */
+
+/* 开场幕布：夜色渐变 + 上下两团柔光，配一层噪点，压在页面之上 */
+.intro-veil {
+  background:
+    radial-gradient(ellipse 72% 46% at 50% 38%, rgba(138, 147, 184, 0.13), transparent 72%),
+    radial-gradient(ellipse 110% 58% at 50% 106%, rgba(168, 132, 74, 0.11), transparent 72%),
+    linear-gradient(180deg, #161018 0%, #070912 55%, #0c1324 100%);
+}
+
+.intro-veil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* 压在月光 / 细沙 / 文案之下 */
+  pointer-events: none;
+  opacity: 0.12;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 月光图：径向渐变月盘 + 暖光晕 + 极淡月面环形山 */
+.intro-moon {
+  position: relative;
+  overflow: hidden;
+  /* 云滤过后的一层水光：边缘柔化，不是一枚硬边月盘 */
+  filter: blur(1.5px);
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 40% 36%,
+    #f6e0a8 0%,
+    #e8c87a 40%,
+    #a8844a 76%,
+    rgba(168, 132, 74, 0.4) 100%
+  );
+  box-shadow:
+    0 0 60px 12px rgba(232, 200, 122, 0.22),
+    0 0 170px 64px rgba(232, 200, 122, 0.12);
+}
+
+.intro-moon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.26;
+  background:
+    radial-gradient(circle 9% at 34% 30%, rgba(60, 42, 20, 0.5), transparent 70%),
+    radial-gradient(circle 13% at 62% 55%, rgba(60, 42, 20, 0.4), transparent 70%),
+    radial-gradient(circle 7% at 46% 68%, rgba(60, 42, 20, 0.45), transparent 70%),
+    radial-gradient(circle 6% at 70% 26%, rgba(60, 42, 20, 0.35), transparent 70%);
+}
+
+/* 云的柔光带：横向漂移，把月亮「滤成一层水光」 */
+.intro-cloud {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(26px);
+  background: linear-gradient(90deg, transparent, rgba(236, 232, 219, 0.16), transparent);
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translate3d(-4%, 0, 0);
+  }
+  to {
+    transform: translate3d(4%, 0, 0);
+  }
+}
+
+.intro-cloud--a {
+  animation: cloud-drift 18s ease-in-out infinite alternate;
+}
+
+.intro-cloud--b {
+  animation: cloud-drift 24s ease-in-out infinite alternate-reverse;
+}
+
+/* 入站文案：初始隐藏，由 GSAP 逐句淡入（避免首帧闪现） */
+.intro-line {
+  opacity: 0;
+  /* 压在月光柔光之上仍要清楚：给字一圈夜色描边 */
+  text-shadow:
+    0 0 26px rgba(7, 9, 18, 0.92),
+    0 0 8px rgba(7, 9, 18, 0.85),
+    0 1px 3px rgba(7, 9, 18, 0.9);
+  will-change: opacity, transform, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-cloud {
+    animation: none;
+  }
+}
+
+/* —— 耳畔（电台）专用：ON AIR 呼吸点 + 声波细线 —— */
+@keyframes ear-air {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+}
+
+.ear-air {
+  animation: ear-air 1.6s ease-in-out infinite;
+}
+
+@keyframes ear-wave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.ear-wave span {
+  display: block;
+  width: 2px;
+  border-radius: 9999px;
+  background: var(--moon);
+  opacity: 0.75;
+  transform-origin: center;
+  animation: ear-wave 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ear-air,
+  .ear-wave span {
+    animation: none;
+  }
+}
+
+/* 月相刻度：傍晚=新月 / 子夜=满月 / 破晓前=残月，随滚动点亮 */
+.moon-phase {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+  flex: none;
+}
+.moon-phase[data-phase="dusk"] {
+  box-shadow: inset 0 0 0 1px var(--moon-deep);
+}
+.moon-phase[data-phase="midnight"] {
+  background: var(--moon);
+  box-shadow: 0 0 8px rgba(232, 200, 122, 0.45);
+}
+.moon-phase[data-phase="dawn"] {
+  background: linear-gradient(90deg, transparent 48%, var(--moon) 52%);
+  box-shadow: inset 0 0 0 1px var(--moon-deep);
+}
+.moon-phase[data-on="false"] {
+  filter: saturate(0.4);
 }

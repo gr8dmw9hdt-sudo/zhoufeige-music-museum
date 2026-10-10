@@ -1,14 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "@fontsource-variable/bodoni-moda";
 import Nav from "@/components/Nav";
 import JsonLd from "@/components/JsonLd";
 import BackgroundMusic from "@/components/BackgroundMusic";
+import EntranceIntro from "@/components/EntranceIntro";
+import VisitorCounter from "@/components/VisitorCounter";
 import { AudioProvider } from "@/components/AudioProvider";
 import { SITE_URL } from "@/lib/site";
 import { socialLinks, artistLinks } from "@/data/music";
 
 const description =
-  "00后创作歌手周菲戈的非官方粉丝站。从《Simon》的 51:0，到首张全创作专辑《24:01》，把深夜里纷飞的心事写进旋律。";
+  "00后创作歌手周菲戈的深夜音乐馆。从《Simon》的 51:0，到首张全创作专辑《24:01》，把深夜里纷飞的心事写进旋律。24:01，推门进来听歌。";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -34,11 +37,20 @@ export const metadata: Metadata = {
     siteName: "24:01 深夜音乐馆",
     locale: "zh_CN",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "周菲戈 · 24:01 深夜音乐馆",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "周菲戈 · 24:01 深夜音乐馆",
     description,
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -72,16 +84,24 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
-      <body className="grain min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col">
         <JsonLd data={personJsonLd} />
         <AudioProvider>
           <Nav />
-          <main className="flex-1">{children}</main>
-          <footer className="border-t border-white/5 py-8 text-center text-xs text-mist/60">
-            <p>非官方粉丝站 · 图片与音乐版权归原方及周菲戈工作室所有</p>
+          <main className="relative z-10 flex-1">{children}</main>
+          <footer className="relative z-10 border-t border-paper-line py-8 text-center text-xs text-mist/80">
+            <p>深夜音乐馆 · 图片与音乐版权归原方及周菲戈工作室所有</p>
+            <p className="mt-1 max-w-[52ch] mx-auto leading-relaxed">
+              本站不设账号。访问统计只记录访问次数、时间与国家/城市级的大致位置（由
+              Cloudflare 提供，不含 IP），不收集个人身份信息。
+            </p>
             <p className="mt-1">Built with 深夜月光 · 24:01</p>
+            <p className="mt-3">
+              <VisitorCounter />
+            </p>
           </footer>
           <BackgroundMusic />
+          <EntranceIntro />
         </AudioProvider>
       </body>
     </html>

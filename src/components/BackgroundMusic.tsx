@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import {
+  gsap,
+  useGSAP,
+  EASE_IN_OUT,
+  prefersReducedMotion,
+} from "@/lib/gsap";
 import { useBackgroundMusic } from "@/components/AudioProvider";
 
 function MusicIcon() {
@@ -42,7 +48,25 @@ function PauseIcon() {
 
 export default function BackgroundMusic() {
   const { playing, toggle } = useBackgroundMusic();
-  const reduce = useReducedMotion();
+  const iconRef = useRef<HTMLSpanElement>(null);
+
+  useGSAP(
+    () => {
+      if (!playing || prefersReducedMotion()) return;
+      gsap.fromTo(
+        iconRef.current,
+        { scale: 1 },
+        {
+          scale: 1.12,
+          duration: 0.8, // framer 1.6s 整周期 = 0.8 前进 + 0.8 yoyo
+          repeat: -1,
+          yoyo: true,
+          ease: EASE_IN_OUT,
+        },
+      );
+    },
+    { dependencies: [playing], revertOnUpdate: true },
+  );
 
   return (
     <button
@@ -56,18 +80,13 @@ export default function BackgroundMusic() {
           : "border-white/10 bg-night-deep/70 text-paper/60 hover:text-moon"
       }`}
     >
-      <motion.span
-        animate={!reduce && playing ? { scale: [1, 1.12, 1] } : undefined}
-        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-        className="flex"
-      >
+      <span ref={iconRef} className="flex">
         {playing ? <PauseIcon /> : <MusicIcon />}
-      </motion.span>
-      {playing && !reduce && (
+      </span>
+      {playing && (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full border border-moon/40 opacity-60"
-          style={{ animation: "moon-ring 1.8s ease-out infinite" }}
+          className="moon-ring pointer-events-none absolute inset-0 rounded-full border border-moon/40 opacity-60"
         />
       )}
     </button>

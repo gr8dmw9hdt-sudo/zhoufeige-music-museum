@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import GalleryUpload from "@/components/GalleryUpload";
+import Reveal from "@/components/Reveal";
 import { getAdminSupabase, storageUrl } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "影像馆",
   description:
-    "周菲戈影像馆：上传你拍下的现场照片与视频片段，审核通过后与大家一起收藏。",
+    "周菲戈影像馆：上传你拍下的现场照片，审核通过后与大家一起收藏。",
 };
 
 // 内容随投稿实时变化，按请求动态渲染
@@ -42,21 +43,26 @@ export default async function GalleryPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20">
-      <header className="mb-10">
-        <p className="text-sm tracking-[0.3em] text-mist">GALLERY</p>
-        <h1 className="mt-3 font-[family-name:var(--font-fraunces)] text-5xl text-moon">
-          影像馆
-        </h1>
-        <p className="mt-4 max-w-2xl text-paper/70">
-          把你看过的现场、拍下的照片、剪好的片段传上来，和大家一起收藏深夜里关于他的影像。审核通过后会展示在下方。
-        </p>
-      </header>
+      <Reveal>
+        <header className="mb-10">
+          <p className="kicker">GALLERY</p>
+          <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl text-moon">
+            影像馆
+          </h1>
+          <p className="mt-4 max-w-2xl text-paper/85">
+            把你看过的现场、拍下的照片传上来，和大家一起收藏深夜里关于他的影像。审核通过后会展示在下方。
+          </p>
+        </header>
+      </Reveal>
 
-      <section className="mb-14">
-        <GalleryUpload />
-      </section>
+      <Reveal delay={0.1}>
+        <section className="mb-14">
+          <GalleryUpload />
+        </section>
+      </Reveal>
 
       {supabase && (
+        <Reveal delay={0.15}>
         <section>
           {items.length === 0 ? (
             <p className="text-mist">还没有通过审核的影像，来投第一份吧。</p>
@@ -65,7 +71,7 @@ export default async function GalleryPage() {
               {items.map((it) => (
                 <figure
                   key={it.id}
-                  className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]"
+                  className="overflow-hidden rounded-2xl border border-paper-line bg-paper-surface"
                 >
                   {it.type === "video" ? (
                     <video
@@ -85,11 +91,11 @@ export default async function GalleryPage() {
                   <figcaption className="p-4">
                     <div className="text-sm text-paper/90">{it.nickname}</div>
                     {it.caption && (
-                      <div className="mt-1 text-xs text-paper/50">
+                      <div className="mt-1 text-xs text-paper/75">
                         {it.caption}
                       </div>
                     )}
-                    <div className="mt-2 text-xs text-mist/60">
+                    <div className="mt-2 text-xs text-mist/80">
                       {fmtDate(it.created_at)}
                     </div>
                   </figcaption>
@@ -98,6 +104,7 @@ export default async function GalleryPage() {
             </div>
           )}
         </section>
+        </Reveal>
       )}
     </div>
   );

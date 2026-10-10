@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { tourDates } from "@/data/music";
 import JsonLd from "@/components/JsonLd";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "巡演",
@@ -36,17 +37,20 @@ export default function TourPage() {
     <div className="mx-auto max-w-5xl px-6 py-20">
       <JsonLd data={eventsJsonLd} />
 
-      <header className="mb-12">
-        <p className="text-sm tracking-[0.3em] text-mist">TOUR</p>
-        <h1 className="mt-3 font-[family-name:var(--font-fraunces)] text-5xl text-moon">
-          「原来你也睡不着」
-        </h1>
-        <p className="mt-3 max-w-2xl text-paper/70">
-          2026《24:01》巡回演唱会——深夜音乐馆亮着灯，等你来听现场。
-        </p>
-      </header>
+      <Reveal>
+        <header className="mb-12">
+          <p className="kicker">TOUR</p>
+          <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl text-moon">
+            「原来你也睡不着」
+          </h1>
+          <p className="mt-3 max-w-2xl text-paper/85">
+            2026《24:01》巡回演唱会——深夜音乐馆亮着灯，等你来听现场。
+          </p>
+        </header>
+      </Reveal>
 
-      <p className="mb-8 text-sm text-paper/50">
+      <Reveal delay={0.1}>
+      <p className="mb-8 text-sm text-paper/75">
         * 场次、票价与场馆以官方渠道公布为准，购票请关注
         <a
           href="https://weibo.com/n/周菲戈"
@@ -63,10 +67,10 @@ export default function TourPage() {
         {tourDates.map((t) => (
           <li
             key={t.city}
-            className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-2xl border border-moon/10 bg-white/[0.02] p-6 transition-colors duration-300 hover:border-moon/30"
+            className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-2xl border border-paper-line bg-paper-surface p-6 transition-colors duration-300 hover:border-moon/30"
           >
             <div className="w-40 shrink-0">
-              <div className="font-[family-name:var(--font-fraunces)] text-2xl text-paper">
+              <div className="font-[family-name:var(--font-display)] text-2xl text-paper">
                 {t.city}
               </div>
               {t.note && <div className="mt-1 text-xs text-moon/80">{t.note}</div>}
@@ -75,10 +79,11 @@ export default function TourPage() {
               <div className="text-paper/90">{t.venue}</div>
               <div className="mt-1 text-sm text-mist">{t.date}</div>
             </div>
-            {t.ticket && <div className="text-sm text-paper/70">{t.ticket}</div>}
+            {t.ticket && <div className="text-sm text-paper/85">{t.ticket}</div>}
           </li>
         ))}
       </ol>
+      </Reveal>
     </div>
   );
 }

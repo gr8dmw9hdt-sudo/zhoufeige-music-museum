@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 // Fixes a bug in the deprecated @vercel/next toolchain (bundled with Vercel
-// CLI) where `vercel build` collapses the 5 API route edge functions
-// (/api/admin/login|logout|moderate, /api/gallery, /api/messages) into a single
-// handler: one route's .func directory is written for real and the other four
-// are symlinked to it, so every /api/* route runs the same code (all returning
-// "尚未接入数据库").
+// CLI) where `vercel build` collapses the 4 API route edge functions
+// (/api/admin/login|logout|moderate, /api/gallery) into a single handler: one
+// route's .func directory is written for real and the other three are symlinked
+// to it, so every /api/* route runs the same code (all returning "尚未接入数据库").
 //
 // The correct, distinct handler code exists in .next/server/ — only the
 // write-out into .vercel/output/functions is broken. This script reconstructs
-// each of the 5 API functions directly from .next/server/, byte-for-byte the
+// each of the 4 API functions directly from .next/server/, byte-for-byte the
 // way @vercel/next's getNextjsEdgeFunctionSource() would have produced it, and
 // replaces the collapsed symlinks with real directories.
 //

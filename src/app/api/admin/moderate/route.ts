@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     status?: unknown;
   };
   if (
-    (table !== "messages" && table !== "gallery_items") ||
+    table !== "gallery_items" ||
     typeof id !== "string" ||
     (status !== "approved" && status !== "rejected")
   ) {
