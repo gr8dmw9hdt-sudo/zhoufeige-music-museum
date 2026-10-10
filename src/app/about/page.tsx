@@ -63,6 +63,30 @@ export default function AboutPage() {
         ))}
       </dl>
       </Reveal>
+
+      {/* 声明：非官方 + 版权归属 + 联系方式。不显眼，但版权方找过来时要能一眼看到 */}
+      <Reveal delay={0.2}>
+        <section className="mt-14 rounded-xl border border-paper-line bg-paper-surface p-6">
+          <p className="kicker mb-3">声明 / NOTICE</p>
+          <ul className="space-y-2 text-xs leading-relaxed text-mist">
+            <li>本站为非官方网站，由粉丝个人建立与维护，与周菲戈本人及其工作室无隶属关系。</li>
+            <li>
+              站内图片、音乐与歌词版权归原作者及版权方所有；音乐仅提供副歌 30 秒片段试听，
+              不提供完整音源下载。
+            </li>
+            <li>
+              本站不作任何商业用途（无广告、无带货、无收费）。如涉侵权，请邮件告知
+              <a
+                href="mailto:xuchengshicity@icloud.com"
+                className="cursor-pointer text-moon/80 underline decoration-moon/30 underline-offset-2 transition-colors duration-300 hover:text-moon"
+              >
+                xuchengshicity@icloud.com
+              </a>
+              ，我们会立即删除。
+            </li>
+          </ul>
+        </section>
+      </Reveal>
     </div>
   );
 }

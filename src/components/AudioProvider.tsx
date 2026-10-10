@@ -39,11 +39,13 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   return (
     <AudioContext.Provider value={{ playing, toggle }}>
+      {/* 只放《今夜的挽歌》副歌 30 秒片段（完整版请到官方平台）：
+          不自动播放，也不托管整首歌，站内不再有完整音源 */}
       <audio
         ref={audioRef}
         loop
         preload="none"
-        src="/audio/jinye-de-wange.mp3"
+        src="/audio/jinye-de-wange-chorus.mp3"
       />
       {children}
     </AudioContext.Provider>

@@ -78,7 +78,7 @@ export default async function EarIssuePage({ params }: PageProps) {
         <section className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-paper-line bg-paper-surface p-6">
           <ListenButton title={issue.song.title} />
           <span className="text-xs text-mist">
-            点开即听，和右下角的唱片是同一首
+            点开即听本站的副歌 30 秒片段（与右下角唱片同一首），完整版请到官方平台
           </span>
           <div className="ml-auto flex flex-wrap gap-4 text-sm">
             {issue.song.link && (

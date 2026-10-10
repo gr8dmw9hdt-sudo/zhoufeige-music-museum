@@ -4,6 +4,7 @@ import "@fontsource-variable/bodoni-moda";
 import Nav from "@/components/Nav";
 import JsonLd from "@/components/JsonLd";
 import BackgroundMusic from "@/components/BackgroundMusic";
+import ShareButton from "@/components/ShareButton";
 import EntranceIntro from "@/components/EntranceIntro";
 import VisitorCounter from "@/components/VisitorCounter";
 import { AudioProvider } from "@/components/AudioProvider";
@@ -90,7 +91,18 @@ export default function RootLayout({
           <Nav />
           <main className="relative z-10 flex-1">{children}</main>
           <footer className="relative z-10 border-t border-paper-line py-8 text-center text-xs text-mist/80">
-            <p>深夜音乐馆 · 图片与音乐版权归原方及周菲戈工作室所有</p>
+            <p>本站为非官方网站 · 由粉丝个人建立与维护，与周菲戈本人及其工作室无隶属关系</p>
+            <p className="mt-1 max-w-[54ch] mx-auto leading-relaxed">
+              站内图片、音乐与歌词版权归原作者及版权方所有；音乐仅提供副歌 30 秒片段试听。
+              如涉侵权，请邮件告知
+              <a
+                href="mailto:xuchengshicity@icloud.com"
+                className="cursor-pointer text-mist underline decoration-mist/40 underline-offset-2 transition-colors duration-300 hover:text-moon"
+              >
+                xuchengshicity@icloud.com
+              </a>
+              ，我们会立即删除。
+            </p>
             <p className="mt-1 max-w-[52ch] mx-auto leading-relaxed">
               本站不设账号。访问统计只记录访问次数、时间与国家/城市级的大致位置（由
               Cloudflare 提供，不含 IP），不收集个人身份信息。
@@ -101,6 +113,7 @@ export default function RootLayout({
             </p>
           </footer>
           <BackgroundMusic />
+          <ShareButton />
           <EntranceIntro />
         </AudioProvider>
       </body>

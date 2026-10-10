@@ -73,7 +73,11 @@ export default function BackgroundMusic() {
       type="button"
       onClick={toggle}
       aria-label={playing ? "暂停背景音乐" : "播放背景音乐"}
-      title={playing ? "暂停背景音乐" : "播放背景音乐"}
+      title={
+        playing
+          ? "暂停（今夜的挽歌 · 副歌片段）"
+          : "播放《今夜的挽歌》副歌 30 秒片段"
+      }
       className={`fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-md transition-colors duration-300 ${
         playing
           ? "border-moon/60 bg-moon/15 text-moon"
